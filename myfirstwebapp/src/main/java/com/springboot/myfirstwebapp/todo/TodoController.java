@@ -2,6 +2,8 @@ package com.springboot.myfirstwebapp.todo;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -28,10 +30,18 @@ public class TodoController {
 
     @RequestMapping("list-todos")
     public String listAllTodos(ModelMap model) {
-        List<Todo> todos = todoService.findByUsername("name");
+        String username = (String) model.get("name");
+        List<Todo> todos = todoService.findByUsername(username);
         model.addAttribute("todos", todos);
 
         return "listTodos";
+    }
+
+    private String getLoggedInUsername(ModelMap model) {
+        // 현재 실행 중인 스레드의 보안 컨텍스트에서 인증 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // 가져온 인증 정보에서 사용자 이름을 반환합니다.
+        return authentication.getName();
     }
 
     @RequestMapping(value = "add-todo", method = RequestMethod.GET)

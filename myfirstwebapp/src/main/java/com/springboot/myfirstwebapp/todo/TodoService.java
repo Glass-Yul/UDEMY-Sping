@@ -24,7 +24,12 @@ public class TodoService {
     }
 
     public List<Todo> findByUsername(String username){
-        return todos;
+        // 사용자 이름이 일치하는 Todo 객체를 필터링하기 위한 Predicate을 정의합니다.
+        Predicate<? super Todo> predicate = todo -> todo.getUsername().equalsIgnoreCase(username); // 존재 확인
+
+        // Todo 목록을 스트림으로 변환하고, Predicate을 사용하여 사용자 이름이 일치하는 Todo 객체를 필터링합니다.
+        // 그 후, 필터링된 Todo 객체들을 리스트로 변환하여 반환합니다.
+        return todos.stream().filter(predicate).toList();
     }
 
     public void addTodo(String username, String description, LocalDate targetDate, boolean done) {
